@@ -1,4 +1,4 @@
-import { createSelector, lruMemoize } from 'reselect'
+import { createSelector } from 'reselect'
 import _ from 'lodash-es'
 import { blankSpace } from '../../helpers/bookmarks'
 import { makeCollection } from '../collections'
@@ -14,14 +14,6 @@ export const status = ({bookmarks}, spaceId)=>
 	bookmarks.spaces[spaceId] ? bookmarks.spaces[spaceId].status : blankSpace.status
 
 export const makeStatus = () => status
-
-//impure result func: must re-run on every reference change, so keep lru (size 1)
-//memoization instead of reselect 5 default weakMapMemoize (caches per reference forever)
-export const makeBookmarksLastChange = () => createSelector(
-	[({bookmarks={}})=>bookmarks.elements],
-	()=>new Date().getTime(),
-	{ memoize: lruMemoize, argsMemoize: lruMemoize }
-)
 
 export const count = ({bookmarks}, spaceId)=>
 	bookmarks.spaces[spaceId] ? bookmarks.spaces[spaceId].count : blankSpace.count

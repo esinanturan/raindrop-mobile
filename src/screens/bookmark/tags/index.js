@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, createRef } from 'react';
 import t from 't'
 import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
@@ -51,7 +51,10 @@ class BookmarkTagsScreen extends Component {
 		})
 	)
 
+	picker = createRef()
+
 	onSubmit = async()=>{
+		this.picker.current?.addPending()
 		await this.onSave()
 		this.props.navigation.goBack()
 	}
@@ -73,6 +76,7 @@ class BookmarkTagsScreen extends Component {
 				</Header.Buttons>
 
 				<TagPicker
+					ref={this.picker}
 					selected={item.tags}
 					spaceId={item.collectionId}
 					onChange={this.onChange}

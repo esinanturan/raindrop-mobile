@@ -15,21 +15,22 @@ object Utils {
     fun extractUrl(subject: String, text: String): WritableMap {
         val result = Arguments.createMap()
         val words = text.split("\\s+".toRegex())
-
         val pattern = Patterns.WEB_URL
-        for (word in words) {
-            var modifiedWord = word
-            if (pattern.matcher(modifiedWord).find()) {
-                if (
-                    !modifiedWord.lowercase(Locale.ROOT).contains("http://") &&
-                    !modifiedWord.lowercase(Locale.ROOT).contains("https://")
-                ) {
-                    modifiedWord = "http://$modifiedWord"
-                }
-                result.putString("link", modifiedWord)
-                result.putString("title", subject)
-                break
-            }
+
+        // a word with an explicit scheme always wins over a scheme-less domain-like word,
+        // otherwise "hosts.txt" in a title beats the real link that comes after it
+        val link = words.firstOrNull { word ->
+            pattern.matcher(word).find() &&
+            (
+                word.lowercase(Locale.ROOT).contains("http://") ||
+                word.lowercase(Locale.ROOT).contains("https://")
+            )
+        }
+            ?: words.firstOrNull { pattern.matcher(it).matches() }?.let { "http://$it" }
+
+        if (link != null) {
+            result.putString("link", link)
+            result.putString("title", subject)
         }
 
         return result

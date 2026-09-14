@@ -49,6 +49,12 @@ class TagsPicker extends Component {
 		}
 	}
 	
+	//tag typed in search field but not yet added
+	addPending = ()=>{
+		if (this.state.value)
+			this.events.onAdd(this.state.value)
+	}
+
 	field = {
 		onChange: (value)=>{
 			if (value.includes(',')){
