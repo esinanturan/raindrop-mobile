@@ -43,7 +43,7 @@ export default function OpenInternalWebView({ bookmark: { _id, link, type }, vie
         setProgress(nativeEvent.progress)
     }, [setCanGoBack, setProgress])
     const onError = useError(ref, navigation)
-    const progressStyle = useAnimatedStyle(() => ({transform: [{ scaleX: progress }]}), [progress])
+    const progressStyle = useAnimatedStyle(() => ({transform: [{ scaleX: progress }]}))
     const webViewStyle = useMemo(()=>(progress && view=='web' ? undefined : {backgroundColor: 'transparent'}), [progress==1, view])
 
     return (

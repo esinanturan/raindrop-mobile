@@ -96,14 +96,14 @@ function ProPurchaseFlow({ onSuccess, onFail }) {
     return connected && subscriptions.length > 0 && !subscribing ? (
         <Form>
             {subscriptions.map((sub)=>{
-                //Android: subscriptionOfferDetailsAndroid is the reliably populated source per docs.
-                //The cross-platform `subscriptionOffers` field is conditional and not guaranteed.
-                const offers = sub.subscriptionOfferDetailsAndroid || []
+                //v16: `subscriptionOfferDetailsAndroid` removed, cross-platform `subscriptionOffers`
+                //is now guaranteed to be an array for Android subs (Android fields are *Android-suffixed)
+                const offers = sub.subscriptionOffers || []
                 const label = sub.nameAndroid || sub.title
 
                 return offers.map((offer)=>{
-                    const price = offer.pricingPhases?.pricingPhaseList?.[0]?.formattedPrice
-                    const offerKey = `${sub.id}-${offer.basePlanId}-${offer.offerId || 'base'}`
+                    const price = offer.pricingPhasesAndroid?.pricingPhaseList?.[0]?.formattedPrice || offer.displayPrice
+                    const offerKey = `${sub.id}-${offer.basePlanIdAndroid}-${offer.id || 'base'}`
 
                     return plan == sub.id ? (
                         <Goto
@@ -120,7 +120,7 @@ function ProPurchaseFlow({ onSuccess, onFail }) {
                             label={label}
                             icon='vip-diamond'
                             subLabel={price}
-                            onPress={()=>subscribe(sub.id, offer.offerToken)} />
+                            onPress={()=>subscribe(sub.id, offer.offerTokenAndroid)} />
                     )
                 })
             })}

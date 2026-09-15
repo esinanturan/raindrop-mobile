@@ -13,7 +13,12 @@ import Empty from './empty'
 
 export default function Tags({ spaceId='global', value, selected, onToggle, onEdit, onSubmit }) {
 	const dispatch = useDispatch()
-	useEffect(()=>{dispatch(load(spaceId || 'global'))}, [spaceId])
+	useEffect(()=>{
+		dispatch(load('global'))
+		
+		if (parseInt(spaceId))
+			dispatch(load(spaceId))
+	}, [spaceId])
 
 	const getTagsAutocomplete = useMemo(()=>makeTagsAutocomplete(), [])
 	const autocomplete = useSelector(state=>getTagsAutocomplete(state, spaceId, value, selected))

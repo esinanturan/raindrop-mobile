@@ -120,11 +120,11 @@ export default function MySwipeable({ left, right, children }) {
 
     const leftStyle = useAnimatedStyle(() => ({
         transform: [{ translateX: interpolate(x.value, [0, leftWidth || 1], [-(leftWidth || 1), 0], Extrapolation.CLAMP) }]
-    }), [leftWidth])
+    }))
 
     const rightStyle = useAnimatedStyle(() => ({
         transform: [{ translateX: interpolate(x.value, [-(rightWidth || 1), 0], [0, rightWidth || 1], Extrapolation.CLAMP) }]
-    }), [rightWidth])
+    }))
 
     const mainStyle = useAnimatedStyle(() => ({
         transform: [{ translateX: x.value }]

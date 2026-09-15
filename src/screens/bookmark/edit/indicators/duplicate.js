@@ -6,11 +6,11 @@ import { Form } from 'co/form'
 import { Warning } from 'co/alert'
 import Button, { Buttons } from 'co/button'
 
-export default function IndicatorDuplicate({ item: { _id, duplicate, link }, navigation }) {
+export default function IndicatorDuplicate({ item: { duplicate, link }, navigation }) {
     const { isExtension } = useContext(ThemeContext)
 
     const onPress = useCallback(()=>{
-        navigation.navigate('space/search', { query: `_id:${_id} duplicate:${duplicate} match:OR`, autoFocus: false })
+        navigation.navigate('space/search', { query: `_id:${duplicate} duplicate:${duplicate} match:OR`, autoFocus: false })
     }, [link])
 
     if (!duplicate || isExtension)

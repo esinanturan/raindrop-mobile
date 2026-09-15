@@ -14,7 +14,7 @@ export default function Collapsible({ visible, children, style, duration = 400, 
     const animatedStyle = useAnimatedStyle(() => ({
         height: withTiming(visible ? contentHeight : 0, { duration }),
         opacity: withTiming(visible ? 1 : 0, { duration }),
-    }), [visible, contentHeight, duration])
+    }))
 
     return (
         <Animated.View {...etc} style={[style, { overflow: 'hidden' }, animatedStyle]}>

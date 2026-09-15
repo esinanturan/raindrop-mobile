@@ -13,8 +13,7 @@ export default function useHover({ selected, windowX, windowY, measure }) {
             if (result == previous) return
             scheduleOnRN(setRefresh, windowX.value+windowY.value)
             return
-        },
-        [selected, windowX, windowY]
+        }
     )
 
     if (!selected) return

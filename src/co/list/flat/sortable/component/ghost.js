@@ -22,7 +22,7 @@ function Ghost({ item, offset={}, windowX, windowY, renderItem, numColumns }) {
             ...(isMultiColumn ? [{ translateX: windowX.value + offsetX }] : []),
             { translateY: windowY.value + offsetY }
         ]
-    }), [windowX, windowY, offsetX, offsetY, isMultiColumn, widthPct, insetLeft, insetRight])
+    }))
 
     return (
         <Animated.View style={style}>

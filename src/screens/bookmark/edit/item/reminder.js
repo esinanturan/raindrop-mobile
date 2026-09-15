@@ -1,27 +1,50 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import t from 't'
 import { useSelector } from 'react-redux'
 import { isPro } from 'data/selectors/user'
-import DatePicker from 'react-native-date-picker'
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker'
 
 import { shortDateTime } from 'modules/format/date'
 import Goto from 'co/goto'
 
 export default function BookmarkEditActionReminder({ item: { reminder }, onChange }) {
     const pro = useSelector(state=>isPro(state))
-    const [pick, setPick] = useState(false)
-
-    const onShowPick = useCallback(()=>setPick(true), [setPick])
-    const onHidePick = useCallback(()=>setPick(false), [setPick])
 
     const onSetDate = useCallback(date=>{
-        onHidePick()
         onChange({ reminder: { date } })
-    }, [onHidePick, onChange])
+    }, [onChange])
 
     const onClear = useCallback(()=>
         onSetDate(undefined), [onSetDate]
     )
+
+    //Android has no combined datetime dialog: pick date first, then time
+    const onShowPick = useCallback(()=>{
+        const now = new Date()
+        const current = reminder?.date ? new Date(reminder.date) : now
+        const buttons = {
+            positiveButton: { label: t.s('save') },
+            negativeButton: { label: t.s('cancel') }
+        }
+
+        DateTimePickerAndroid.open({
+            mode: 'date',
+            value: current,
+            minimumDate: now,
+            ...buttons,
+            onValueChange: (_, date)=>{
+                const withTime = new Date(date)
+                withTime.setHours(current.getHours(), current.getMinutes(), 0, 0)
+
+                DateTimePickerAndroid.open({
+                    mode: 'time',
+                    value: withTime,
+                    ...buttons,
+                    onValueChange: (_, time)=>onSetDate(time)
+                })
+            }
+        })
+    }, [reminder?.date, onSetDate])
 
     if (!pro)
         return (
@@ -34,7 +57,7 @@ export default function BookmarkEditActionReminder({ item: { reminder }, onChang
                 />
         )
 
-    return (<>
+    return (
         <Goto 
             label={t.s('reminders')}
             subLabel={reminder?.date ? shortDateTime(reminder.date) : ''}
@@ -44,16 +67,5 @@ export default function BookmarkEditActionReminder({ item: { reminder }, onChang
             action={reminder?.date ? 'close-circle': undefined}
             actionVariant={reminder?.date ? 'fill' : undefined}
             onActionPress={reminder?.date ? onClear : undefined} />
-
-        <DatePicker
-            modal
-            open={pick}
-            date={reminder?.date ? new Date(reminder?.date) : new Date()}
-            minimumDate={new Date()}
-            title={t.s('reminders')}
-            confirmText={t.s('save')}
-            cancelText={t.s('cancel')}
-            onConfirm={onSetDate}
-            onCancel={onHidePick} />
-    </>)
+    )
 }
